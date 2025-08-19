@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Search Resumes - Resume Parser{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h4><i class="fas fa-search"></i> Search Resumes</h4>
+    </div>
+    <div class="card-body">
+        <form method="GET">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="q" class="form-label">Search by Name, Email, or Company</label>
+                        <input type="text" class="form-control" id="q" name="q" 
+                               value="{{ query }}" placeholder="Enter search term...">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="skill" class="form-label">Filter by Skill</label>
+                        <input type="text" class="form-control" id="skill" name="skill" 
+                               value="{{ skill_filter }}" placeholder="e.g., Python, Java">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="mb-3">
+                        <label class="form-label">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary d-block w-100">Search</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if results %}
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>Search Results ({{ results|length }} found)</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Skills</th>
+                        <th>Companies</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resume in results %}
+                    <tr>
+                        <td>{{ resume[2] or 'N/A' }}</td>
+                        <td>{{ resume[3] or 'N/A' }}</td>
+                        <td>{{ resume[4] or 'N/A' }}</td>
+                        <td>
+                            {% if resume[5] %}
+                                {% set skills = resume[5] | from_json %}
+                                {% for skill in skills[:3] %}
+                                    <span class="badge bg-secondary skill-badge">{{ skill }}</span>
+                                {% endfor %}
+                                {% if skills|length > 3 %}
+                                    <span class="text-muted">+{{ skills|length - 3 }} more</span>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if resume[9] %}
+                                {% set companies = resume[9] | from_json %}
+                                {{ companies[:2] | join(', ') }}
+                                {% if companies|length > 2 %}...{% endif %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('view_resume', resume_id=resume[0]) }}" 
+                               class="btn btn-sm btn-outline-primary">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% elif query or skill_filter %}
+<div class="alert alert-info">
+    No resumes found matching your search criteria.
+</div>
+{% endif %}
+{% endblock %}

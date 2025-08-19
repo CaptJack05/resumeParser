@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-4">Welcome to Resume Parser</h1>
+            <p class="lead">Upload and parse resumes automatically to extract key information like skills, experience, and contact details.</p>
+            <hr class="my-4">
+            <p>Get started by uploading a resume or search through existing parsed resumes.</p>
+            <div class="btn-group" role="group">
+                <a class="btn btn-primary btn-lg" href="{{ url_for('upload_file') }}">
+                    <i class="fas fa-upload"></i> Upload Resume
+                </a>
+                <a class="btn btn-outline-secondary btn-lg" href="{{ url_for('search') }}">
+                    <i class="fas fa-search"></i> Search Resumes
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-bar"></i> Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div id="stats-content">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Load statistics
+fetch('/api/stats')
+    .then(response => response.json())
+    .then(data => {
+        const statsContent = document.getElementById('stats-content');
+        statsContent.innerHTML = `
+            <p><strong>Total Resumes:</strong> ${data.total_resumes}</p>
+            <h6>Top Skills:</h6>
+            <ul class="list-unstyled">
+                ${Object.entries(data.top_skills).slice(0, 5).map(([skill, count]) => 
+                    `<li><span class="badge bg-secondary">${skill}</span> <small>(${count})</small></li>`
+                ).join('')}
+            </ul>
+        `;
+    })
+    .catch(error => {
+        document.getElementById('stats-content').innerHTML = '<p>Error loading statistics</p>';
+    });
+</script>
+{% endblock %}
