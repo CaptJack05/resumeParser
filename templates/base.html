@@ -3,51 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Resume Parser App{% endblock %}</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>{% block title %}Resume Parser{% endblock %}</title>
     <style>
-        .navbar-brand { font-weight: bold; }
-        .card { margin-bottom: 20px; }
-        .skill-badge { margin: 2px; }
-        .footer { margin-top: 50px; padding: 20px 0; background-color: #f8f9fa; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .flash-messages {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .alert {
+            background: #28a745;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .alert.error {
+            background: #dc3545;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .main-content {
+            min-height: calc(100vh - 120px);
+        }
+        
+        .footer {
+            background: rgba(0, 0, 0, 0.1);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .navbar {
+                padding: 1rem;
+            }
+        }
     </style>
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="fas fa-file-alt"></i> Resume Parser
-            </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="{{ url_for('index') }}">Home</a>
-                <a class="nav-link" href="{{ url_for('upload_file') }}">Upload</a>
-                <a class="nav-link" href="{{ url_for('search') }}">Search</a>
-            </div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="logo">📄 Resume Parser</a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}">🏠 Home</a></li>
+                <li><a href="{{ url_for('upload_file') }}">📤 Upload</a></li>
+                <li><a href="{{ url_for('search') }}">🔍 Search</a></li>
+            </ul>
         </div>
     </nav>
-
-    <div class="container mt-4">
+    
+    <main class="main-content">
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-info alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="alert">{{ message }}</div>
+                    {% endfor %}
+                </div>
             {% endif %}
         {% endwith %}
-
+        
         {% block content %}{% endblock %}
-    </div>
-
+    </main>
+    
     <footer class="footer">
-        <div class="container text-center">
-            <span class="text-muted">Resume Parser App - Built with Flask</span>
-        </div>
+        <p>&copy; 2024 Resume Parser - Powered by AI</p>
     </footer>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

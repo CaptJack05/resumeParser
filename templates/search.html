@@ -1,96 +1,429 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Resumes</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .search-form {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        .form-group input, .form-group select {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .search-btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .search-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .results {
+            padding: 30px;
+        }
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .results-count {
+            color: #666;
+            font-size: 1.1em;
+        }
+        .result-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+        .result-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        .result-name {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        .result-email {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .result-email:hover {
+            text-decoration: underline;
+        }
+        .result-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .meta-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .meta-label {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .meta-value {
+            color: #333;
+        }
+        .skills-preview {
+            margin-top: 15px;
+        }
+        .skill-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 10px;
+            margin: 2px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        .view-btn {
+            background: #28a745;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        .view-btn:hover {
+            background: #218838;
+        }
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        .no-results h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .summary-preview {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-style: italic;
+            color: #1565c0;
+        }
+        .nav-buttons {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 0 10px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .result-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .result-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Search Resumes</h1>
+            <p>Find the perfect candidate with advanced search filters</p>
+        </div>
 
-{% block title %}Search Resumes - Resume Parser{% endblock %}
-
-{% block content %}
-<div class="card">
-    <div class="card-header">
-        <h4><i class="fas fa-search"></i> Search Resumes</h4>
-    </div>
-    <div class="card-body">
-        <form method="GET">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="q" class="form-label">Search by Name, Email, or Company</label>
-                        <input type="text" class="form-control" id="q" name="q" 
-                               value="{{ query }}" placeholder="Enter search term...">
-                    </div>
+        <form class="search-form" method="GET">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="q">🔎 Search Keywords</label>
+                    <input type="text" id="q" name="q" value="{{ query }}" 
+                           placeholder="Name, company, or keywords...">
                 </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label for="skill" class="form-label">Filter by Skill</label>
-                        <input type="text" class="form-control" id="skill" name="skill" 
-                               value="{{ skill_filter }}" placeholder="e.g., Python, Java">
-                    </div>
+                
+                <div class="form-group">
+                    <label for="skill">🛠️ Required Skill</label>
+                    <input type="text" id="skill" name="skill" value="{{ skill_filter }}" 
+                           placeholder="Python, Java, React...">
                 </div>
-                <div class="col-md-2">
-                    <div class="mb-3">
-                        <label class="form-label">&nbsp;</label>
-                        <button type="submit" class="btn btn-primary d-block w-100">Search</button>
-                    </div>
+                
+                <div class="form-group">
+                    <label for="experience">💼 Minimum Experience</label>
+                    <select id="experience" name="experience">
+                        <option value="">Any experience</option>
+                        <option value="0" {{ 'selected' if experience_filter == '0' }}>Entry level (0+ years)</option>
+                        <option value="2" {{ 'selected' if experience_filter == '2' }}>Junior (2+ years)</option>
+                        <option value="5" {{ 'selected' if experience_filter == '5' }}>Mid-level (5+ years)</option>
+                        <option value="8" {{ 'selected' if experience_filter == '8' }}>Senior (8+ years)</option>
+                        <option value="12" {{ 'selected' if experience_filter == '12' }}>Lead (12+ years)</option>
+                    </select>
                 </div>
             </div>
+            
+            <div style="text-align: center;">
+                <button type="submit" class="search-btn">🚀 Search Candidates</button>
+                <a href="{{ url_for('search') }}" class="btn" style="background: #6c757d; margin-left: 10px;">Clear Filters</a>
+            </div>
         </form>
-    </div>
-</div>
 
-{% if results %}
-<div class="card mt-4">
-    <div class="card-header">
-        <h5>Search Results ({{ results|length }} found)</h5>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Skills</th>
-                        <th>Companies</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for resume in results %}
-                    <tr>
-                        <td>{{ resume[2] or 'N/A' }}</td>
-                        <td>{{ resume[3] or 'N/A' }}</td>
-                        <td>{{ resume[4] or 'N/A' }}</td>
-                        <td>
-                            {% if resume[5] %}
-                                {% set skills = resume[5] | from_json %}
-                                {% for skill in skills[:3] %}
-                                    <span class="badge bg-secondary skill-badge">{{ skill }}</span>
-                                {% endfor %}
-                                {% if skills|length > 3 %}
-                                    <span class="text-muted">+{{ skills|length - 3 }} more</span>
-                                {% endif %}
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if resume[9] %}
-                                {% set companies = resume[9] | from_json %}
-                                {{ companies[:2] | join(', ') }}
-                                {% if companies|length > 2 %}...{% endif %}
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{{ url_for('view_resume', resume_id=resume[0]) }}" 
-                               class="btn btn-sm btn-outline-primary">View</a>
-                        </td>
-                    </tr>
+        <div class="results">
+            {% if results %}
+            <div class="results-header">
+                <div class="results-count">
+                    Found {{ results|length }} candidate{{ 's' if results|length != 1 else '' }}
+                </div>
+            </div>
+
+            {% for result in results %}
+            <div class="result-card">
+                <div class="result-header">
+                    <div>
+                        <h3 class="result-name">{{ result[2] or 'Unknown Name' }}</h3>
+                        {% if result[3] %}
+                        <a href="mailto:{{ result[3] }}" class="result-email">{{ result[3] }}</a>
+                        {% endif %}
+                    </div>
+                    <a href="{{ url_for('view_resume', resume_id=result[0]) }}" class="view-btn">View Full Resume</a>
+                </div>
+
+                <div class="result-meta">
+                    {% if result[4] %}
+                    <div class="meta-item">
+                        <div class="meta-label">Phone</div>
+                        <div class="meta-value">{{ result[4] }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if result[6] %}
+                    <div class="meta-item">
+                        <div class="meta-label">Current Location</div>
+                        <div class="meta-value">{{ result[6] }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if result[11] %}
+                    <div class="meta-item">
+                        <div class="meta-label">Experience</div>
+                        <div class="meta-value">{{ result[11] }} years</div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if result[12] %}
+                    <div class="meta-item">
+                        <div class="meta-label">Avg Job Duration</div>
+                        <div class="meta-value">{{ result[12] }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if result[5] %}
+                {% set skills = result[5] | from_json %}
+                {% if skills %}
+                <div class="skills-preview">
+                    <div class="meta-label">Skills:</div>
+                    {% for skill in skills[:8] %}
+                    <span class="skill-tag">{{ skill }}</span>
                     {% endfor %}
-                </tbody>
-            </table>
+                    {% if skills|length > 8 %}
+                    <span class="skill-tag" style="background: #6c757d;">+{{ skills|length - 8 }} more</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endif %}
+
+                {% if result[9] %}
+                {% set companies = result[9] | from_json %}
+                {% if companies %}
+                <div class="skills-preview">
+                    <div class="meta-label">Companies:</div>
+                    {% for company in companies[:5] %}
+                    <span class="skill-tag" style="background: #28a745;">{{ company }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endif %}
+
+                {% if result[16] %}
+                <div class="summary-preview">
+                    <strong>Summary:</strong> {{ result[16][:200] }}{% if result[16]|length > 200 %}...{% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            {% elif query or skill_filter or experience_filter %}
+            <div class="no-results">
+                <h3>No candidates found</h3>
+                <p>Try adjusting your search criteria or browse all resumes.</p>
+            </div>
+            {% else %}
+            <div class="no-results">
+                <h3>Welcome to Resume Search!</h3>
+                <p>Use the search form above to find candidates by name, skills, experience, or keywords.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="nav-buttons">
+            <a href="{{ url_for('index') }}" class="btn">🏠 Home</a>
+            <a href="{{ url_for('upload_file') }}" class="btn">📤 Upload Resume</a>
+            <a href="{{ url_for('api_stats') }}" class="btn" onclick="showStats(event)">📊 View Stats</a>
         </div>
     </div>
-</div>
-{% elif query or skill_filter %}
-<div class="alert alert-info">
-    No resumes found matching your search criteria.
-</div>
-{% endif %}
-{% endblock %}
+
+    <script>
+        // Add live search suggestions
+        document.addEventListener('DOMContentLoaded', function() {
+            const skillInput = document.getElementById('skill');
+            const commonSkills = [
+                'Python', 'Java', 'JavaScript', 'React', 'Angular', 'Vue.js',
+                'Node.js', 'SQL', 'MongoDB', 'Docker', 'Kubernetes', 'AWS',
+                'Azure', 'Git', 'Machine Learning', 'Data Science', 'Flask',
+                'Django', 'Spring Boot', 'REST API', 'DevOps', 'Linux'
+            ];
+
+            skillInput.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+                if (value.length > 1) {
+                    const suggestions = commonSkills.filter(skill => 
+                        skill.toLowerCase().includes(value)
+                    );
+                    // Here you could implement a dropdown with suggestions
+                }
+            });
+        });
+
+        function showStats(event) {
+            event.preventDefault();
+            fetch('/api/stats')
+                .then(response => response.json())
+                .then(data => {
+                    alert(`Resume Database Stats:\n\n` +
+                          `Total Resumes: ${data.total_resumes}\n` +
+                          `Average Experience: ${data.average_experience} years\n\n` +
+                          `Top Skills:\n` +
+                          Object.entries(data.top_skills)
+                                .slice(0, 5)
+                                .map(([skill, count]) => `• ${skill}: ${count}`)
+                                .join('\n'));
+                })
+                .catch(error => {
+                    alert('Error loading stats');
+                });
+        }
+
+        // Add form validation
+        document.querySelector('.search-form').addEventListener('submit', function(e) {
+            const query = document.getElementById('q').value.trim();
+            const skill = document.getElementById('skill').value.trim();
+            const experience = document.getElementById('experience').value;
+            
+            if (!query && !skill && !experience) {
+                e.preventDefault();
+                alert('Please enter at least one search criteria');
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

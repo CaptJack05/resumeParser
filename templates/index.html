@@ -1,59 +1,186 @@
 {% extends "base.html" %}
 
+{% block title %}Home - Resume Parser{% endblock %}
+
 {% block content %}
-<div class="row">
-    <div class="col-md-8">
-        <div class="jumbotron bg-light p-5 rounded">
-            <h1 class="display-4">Welcome to Resume Parser</h1>
-            <p class="lead">Upload and parse resumes automatically to extract key information like skills, experience, and contact details.</p>
-            <hr class="my-4">
-            <p>Get started by uploading a resume or search through existing parsed resumes.</p>
-            <div class="btn-group" role="group">
-                <a class="btn btn-primary btn-lg" href="{{ url_for('upload_file') }}">
-                    <i class="fas fa-upload"></i> Upload Resume
-                </a>
-                <a class="btn btn-outline-secondary btn-lg" href="{{ url_for('search') }}">
-                    <i class="fas fa-search"></i> Search Resumes
+<div style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+    <div style="text-align: center; color: white; margin-bottom: 3rem;">
+        <h1 style="font-size: 3rem; margin-bottom: 1rem; font-weight: 300;">
+            🤖 AI-Powered Resume Parser
+        </h1>
+        <p style="font-size: 1.2rem; opacity: 0.9; max-width: 600px; margin: 0 auto;">
+            Upload resumes and let our AI extract comprehensive candidate information automatically
+        </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+        <!-- Upload Card -->
+        <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📤</div>
+                <h3 style="color: #333; margin-bottom: 1rem;">Upload Resume</h3>
+                <p style="color: #666; margin-bottom: 2rem;">Upload PDF or DOCX files and let AI extract all candidate information</p>
+                <a href="{{ url_for('upload_file') }}" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: 600; display: inline-block; transition: all 0.3s ease;" onmouseover="this.style.background='#5a67d8'" onmouseout="this.style.background='#667eea'">
+                    Start Upload
                 </a>
             </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h5><i class="fas fa-chart-bar"></i> Statistics</h5>
+
+        <!-- Search Card -->
+        <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                <h3 style="color: #333; margin-bottom: 1rem;">Search Candidates</h3>
+                <p style="color: #666; margin-bottom: 2rem;">Find the perfect candidate using advanced search filters</p>
+                <a href="{{ url_for('search') }}" style="background: #28a745; color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: 600; display: inline-block; transition: all 0.3s ease;" onmouseover="this.style.background='#218838'" onmouseout="this.style.background='#28a745'">
+                    Search Now
+                </a>
             </div>
-            <div class="card-body">
-                <div id="stats-content">
-                    <div class="text-center">
-                        <div class="spinner-border" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                </div>
+        </div>
+
+        <!-- Stats Card -->
+        <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                <h3 style="color: #333; margin-bottom: 1rem;">Database Stats</h3>
+                <p style="color: #666; margin-bottom: 2rem;">View analytics and insights from your resume database</p>
+                <button onclick="showStats()" style="background: #6f42c1; color: white; padding: 12px 30px; border: none; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='#5a32a3'" onmouseout="this.style.background='#6f42c1'">
+                    View Stats
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 3rem; margin-bottom: 3rem;">
+        <h2 style="text-align: center; color: white; margin-bottom: 2rem; font-size: 2rem;">🚀 AI-Powered Features</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+            <div style="text-align: center; color: white;">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">🧠</div>
+                <h4 style="margin-bottom: 1rem;">Smart Extraction</h4>
+                <p style="opacity: 0.9;">AI understands context and extracts comprehensive information from resumes</p>
+            </div>
+            
+            <div style="text-align: center; color: white;">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">⚡</div>
+                <h4 style="margin-bottom: 1rem;">Fast Processing</h4>
+                <p style="opacity: 0.9;">Process resumes in seconds with high accuracy</p>
+            </div>
+            
+            <div style="text-align: center; color: white;">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">🎯</div>
+                <h4 style="margin-bottom: 1rem;">Advanced Search</h4>
+                <p style="opacity: 0.9;">Find candidates by skills, experience, location, and more</p>
+            </div>
+            
+            <div style="text-align: center; color: white;">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">💾</div>
+                <h4 style="margin-bottom: 1rem;">Secure Storage</h4>
+                <p style="opacity: 0.9;">All data is securely stored and easily accessible</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <h3 style="color: white; margin-bottom: 2rem;">Quick Actions</h3>
+        <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <a href="{{ url_for('upload_file') }}" style="background: rgba(255, 255, 255, 0.2); color: white; padding: 10px 20px; text-decoration: none; border-radius: 20px; backdrop-filter: blur(10px); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">
+                📤 Upload Resume
+            </a>
+            <a href="{{ url_for('search') }}" style="background: rgba(255, 255, 255, 0.2); color: white; padding: 10px 20px; text-decoration: none; border-radius: 20px; backdrop-filter: blur(10px); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">
+                🔍 Search Candidates
+            </a>
+            <button onclick="showApiInfo()" style="background: rgba(255, 255, 255, 0.2); color: white; padding: 10px 20px; border: none; border-radius: 20px; backdrop-filter: blur(10px); cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">
+                🔗 API Info
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Modal -->
+<div id="statsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;" onclick="this.style.display='none'">
+    <div style="background: white; margin: 5% auto; padding: 2rem; border-radius: 15px; max-width: 500px; position: relative;" onclick="event.stopPropagation()">
+        <span onclick="document.getElementById('statsModal').style.display='none'" style="position: absolute; top: 10px; right: 15px; font-size: 2rem; cursor: pointer; color: #999;">&times;</span>
+        <h3 style="margin-bottom: 1rem; color: #333;">📊 Database Statistics</h3>
+        <div id="statsContent" style="color: #666;">
+            <div style="text-align: center; padding: 2rem;">
+                <div style="font-size: 2rem;">⏳</div>
+                <p>Loading statistics...</p>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-// Load statistics
-fetch('/api/stats')
-    .then(response => response.json())
-    .then(data => {
-        const statsContent = document.getElementById('stats-content');
-        statsContent.innerHTML = `
-            <p><strong>Total Resumes:</strong> ${data.total_resumes}</p>
-            <h6>Top Skills:</h6>
-            <ul class="list-unstyled">
-                ${Object.entries(data.top_skills).slice(0, 5).map(([skill, count]) => 
-                    `<li><span class="badge bg-secondary">${skill}</span> <small>(${count})</small></li>`
-                ).join('')}
-            </ul>
-        `;
-    })
-    .catch(error => {
-        document.getElementById('stats-content').innerHTML = '<p>Error loading statistics</p>';
+function showStats() {
+    document.getElementById('statsModal').style.display = 'block';
+    
+    fetch('/api/stats')
+        .then(response => response.json())
+        .then(data => {
+            const statsHtml = `
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                    <div style="text-align: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                        <div style="font-size: 2rem; color: #667eea; font-weight: bold;">${data.total_resumes}</div>
+                        <div style="color: #666;">Total Resumes</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                        <div style="font-size: 2rem; color: #28a745; font-weight: bold;">${data.average_experience}</div>
+                        <div style="color: #666;">Avg Experience (years)</div>
+                    </div>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 1rem; color: #333;">Top Skills:</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        ${Object.entries(data.top_skills).slice(0, 8).map(([skill, count]) => 
+                            `<span style="background: #667eea; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8em;">${skill} (${count})</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('statsContent').innerHTML = statsHtml;
+        })
+        .catch(error => {
+            document.getElementById('statsContent').innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: #dc3545;">
+                    <div style="font-size: 2rem;">❌</div>
+                    <p>Error loading statistics</p>
+                </div>
+            `;
+        });
+}
+
+function showApiInfo() {
+    alert(`🔗 API Endpoints:
+
+📊 GET /api/stats - Get database statistics
+📝 POST /api/analyze - Analyze resume text directly
+
+Example usage:
+curl -X POST http://your-server/api/analyze \\
+  -H "Content-Type: application/json" \\
+  -d '{"text": "Your resume text here"}'`);
+}
+
+// Add some interactive effects
+document.addEventListener('DOMContentLoaded', function() {
+    // Add floating animation to feature icons
+    const icons = document.querySelectorAll('div[style*="font-size: 2rem"]');
+    icons.forEach((icon, index) => {
+        icon.style.animation = `float 3s ease-in-out infinite ${index * 0.5}s`;
     });
+    
+    // Add CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    `;
+    document.head.appendChild(style);
+});
 </script>
 {% endblock %}
