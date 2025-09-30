@@ -34,7 +34,9 @@ def from_json_filter(value):
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'pdf', 'docx', 'txt'}
 DATABASE_FILE = 'resumes.db'
-GOOGLE_AI_API_KEY = 'AIzaSyDOY6RaRUtUZh2zjx5OwKFVszyPvUqc7xM'
+GOOGLE_AI_API_KEY = 'AIzaSyDZqRsFovKCfkh2de7oSZlKvFj-UeX2aQc'
+# api backup: AIzaSyDOY6RaRUtUZh2zjx5OwKFVszyPvUqc7xM
+
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size

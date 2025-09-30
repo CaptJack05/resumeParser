@@ -1,44 +1,191 @@
-{% extends "base.html" %}
+{% extends "base.html" %} 
 
 {% block title %}Upload Resume - Resume Parser{% endblock %}
 
+{% block extra_css %}
+<style>
+    .upload-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 2rem;
+        min-height: 70vh;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        border-radius: 16px;
+        padding: 2rem;
+        color: white;
+        width: 100%;
+        max-width: 600px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        margin-bottom: 2rem;
+        animation: fadeIn 0.6s ease;
+    }
+
+    .card-header h4,
+    .card-header h6 {
+        margin: 0;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    /* Drag & Drop Zone */
+    .drop-zone {
+        margin-top: 1rem;
+        border: 2px dashed rgba(255, 255, 255, 0.6);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .drop-zone:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .drop-zone.dragover {
+        border-color: #28a745;
+        background: rgba(40, 167, 69, 0.2);
+    }
+
+    .drop-zone i {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        color: #fff;
+    }
+
+    .drop-zone p {
+        margin: 0.3rem 0;
+        color: #eee;
+    }
+
+    .file-name {
+        margin-top: 0.8rem;
+        font-size: 0.95rem;
+        color: #f1f1f1;
+        font-weight: 500;
+    }
+
+    .btn-primary {
+        border: none;
+        border-radius: 25px;
+        padding: 0.6rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    }
+
+    .list-unstyled li {
+        margin: 0.5rem 0;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .list-unstyled i {
+        margin-right: 8px;
+        color: #28a745;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row">
-    <div class="col-md-6 offset-md-3">
-        <div class="card">
-            <div class="card-header">
-                <h4><i class="fas fa-upload"></i> Upload Resume</h4>
-            </div>
-            <div class="card-body">
-                <form method="POST" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="file" class="form-label">Choose Resume File</label>
-                        <input type="file" class="form-control" id="file" name="file" 
-                               accept=".pdf,.docx" required>
-                        <div class="form-text">Supported formats: PDF, DOCX (Max size: 16MB)</div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-upload"></i> Upload and Parse
-                    </button>
-                </form>
-            </div>
+<div class="upload-container">
+    <div class="card">
+        <div class="card-header">
+            <h4><i class="fas fa-upload"></i> Upload Resume</h4>
         </div>
-        
-        <div class="card mt-4">
-            <div class="card-header">
-                <h6>What information will be extracted?</h6>
-            </div>
-            <div class="card-body">
-                <ul class="list-unstyled">
-                    <li><i class="fas fa-check text-success"></i> Name</li>
-                    <li><i class="fas fa-check text-success"></i> Email Address</li>
-                    <li><i class="fas fa-check text-success"></i> Phone Number</li>
-                    <li><i class="fas fa-check text-success"></i> Skills</li>
-                    <li><i class="fas fa-check text-success"></i> Education</li>
-                    <li><i class="fas fa-check text-success"></i> Previous Companies</li>
-                </ul>
-            </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                
+                <!-- Drag & Drop Zone -->
+                <div class="drop-zone" id="dropZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drag & Drop your resume here</p>
+                    <p>or <strong>Browse</strong> to upload</p>
+                    <input type="file" id="fileInput" name="file" accept=".pdf,.docx" hidden required>
+                    <div class="file-name" id="fileName">No file selected</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-upload"></i> Upload and Parse
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h6>What information will be extracted?</h6>
+        </div>
+        <div class="card-body">
+            <ul class="list-unstyled">
+                <li><i class="fas fa-check"></i> Name</li>
+                <li><i class="fas fa-check"></i> Email Address</li>
+                <li><i class="fas fa-check"></i> Phone Number</li>
+                <li><i class="fas fa-check"></i> Skills</li>
+                <li><i class="fas fa-check"></i> Education</li>
+                <li><i class="fas fa-check"></i> Previous Companies</li>
+            </ul>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("fileInput");
+    const fileName = document.getElementById("fileName");
+
+    // Click to browse
+    dropZone.addEventListener("click", () => fileInput.click());
+
+    // Update file name
+    fileInput.addEventListener("change", () => {
+        if (fileInput.files.length) {
+            fileName.textContent = fileInput.files[0].name;
+        } else {
+            fileName.textContent = "No file selected";
+        }
+    });
+
+    // Drag events
+    dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("dragover");
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("dragover");
+    });
+
+    dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("dragover");
+        if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+            fileName.textContent = e.dataTransfer.files[0].name;
+        }
+    });
+</script>
 {% endblock %}
